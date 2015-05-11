@@ -12,42 +12,47 @@
     //        2. if cookie is not empty, check if cookie is expired:
     //            1. if not expired, do nothing
     //            2. if expired, set cookie and alert
-    var simpleVerAccepted = {
-        'chrome': '42',
-        'safari': '8',
-        'firefox': '37',
-        'opr': '28',
-        'msie': '11'
+    var defaults = {
+        verReq: {
+            'chrome': '42.0.2311.135',
+            'safari': '8.0.6',
+            'firefox': '37.0',
+            'opr': '29.0.1795.47',
+            'msie': '11.0'
+        },
+        verCpr: {
+            'chrome': 0,
+            'safari': 0,
+            'firefox': 0,
+            'opr': 0,
+            'msie': 0
+        },
+        spr: { // seperator, 'version' means safari
+            'chrome':'/',
+            'version':'/',
+            'firefox':'/',
+            'opr':'/',
+            'msie':' '
+        },
+        showBrowser: {
+            'chrome':'Google Chrome',
+            'safari':'Safari',
+            'firefox':'Firefox',
+            'opr':'Opera',
+            'msie':'Internet Explorer'
+        },
+        link: {
+            'chrome':'https://www.google.com/chrome/browser/desktop/index.html',
+            'safari':'https://support.apple.com/zh-tw/HT201541',
+            'firefox':'https://www.mozilla.org/zh-TW/firefox/new/',
+            'opr':'http://www.opera.com/zh-tw',
+            'msie':'http://windows.microsoft.com/zh-tw/internet-explorer/download-ie'
+        },
+        mobileNotify: {
+            'alsoShowInMobile': true
+        }
     };
-    var versionAccepted = {
-        'chrome': '42.0.2311.135',
-        'safari': '8.0.6',
-        'firefox': '37.0',
-        'opr': '29.0.1795.47',
-        'msie': '11.0'
-    };
-    var spr = { // seperator, 'version' means safari
-        'chrome':'/',
-        'version':'/',
-        'firefox':'/',
-        'opr':'/',
-        'msie':' '
-    };
-    var showBrowser = {
-        'chrome':'Google Chrome',
-        'safari':'Safari',
-        'firefox':'Firefox',
-        'opr':'Opera',
-        'msie':'Internet Explorer'
-    };
-    var link = {
-        'chrome':'https://www.google.com/chrome/browser/desktop/index.html',
-        'safari':'https://support.apple.com/zh-tw/HT201541',
-        'firefox':'https://www.mozilla.org/zh-TW/firefox/new/',
-        'opr':'http://www.opera.com/zh-tw',
-        'msie':'http://windows.microsoft.com/zh-tw/internet-explorer/download-ie'
-    }
-    var agt = navigator.userAgent.toLowerCase();alert(agt);
+    var agt = navigator.userAgent.toLowerCase();//alert(agt);
     jQuery.bcPlugin = {
         getBrowser: function() {
             var browser = '';
@@ -79,7 +84,7 @@
             } else { // ie case
                 end = tmp.indexOf(';');
             }
-            var pos = tmp.indexOf(spr[browser])+1;
+            var pos = tmp.indexOf(defaults.spr[browser])+1;
             var len = end - pos; 
             var version = tmp.substr(pos, len);
             return version;
@@ -92,7 +97,7 @@
             }
             var tmp = agt.substr(agt.indexOf(browser));
             var end = tmp.indexOf('.');
-            var pos = tmp.indexOf(spr[browser])+1;
+            var pos = tmp.indexOf(defaults.spr[browser])+1;
             var len = end - pos; 
             var version = tmp.substr(pos, len);
             return version;
@@ -121,12 +126,22 @@
             }
             return isMobile;
         },
-        notifyUpgrade: function() {
+        notifyUpgrade: function( options ) {
+            var settings = $.extend( true, {}, defaults, options);
+            // $( "#one" ).append( JSON.stringify( defaults ) );
+            // $( "#two" ).append( JSON.stringify( settings ) );
+            // alert('yo');alert(settings.verReq['chrome']);
+            // alert(defaults.spr.chrome);
             var browser = $.bcPlugin.getBrowser();
-            var version = $.bcPlugin.getSimpleVer();
-            if ( parseInt(version) < parseInt(simpleVerAccepted[browser]) ) {
-                checkCookie();
+            var version = $.bcPlugin.getVersion().split('.');
+            var base = settings.verReq[browser].split('.');
+            var min = Math.min(settings.verCpr[browser], ( base.length-1 ) );
+            for( var i = 0; i <= min; i++ ) {
+                if ( parseInt( version[i] ) < parseInt( base[i] ) ) {
+                    checkCookie();
+                }
             }
+
             function checkCookie() {
                 if ( document.cookie && (document.cookie.indexOf('browseralert=noalert') != -1) ) {
                     return;
@@ -152,7 +167,7 @@
             }
             function showUpgradeMsg() {
                 $('body').find('._bg').show();
-                $('body').append('<div ev-class="dialog-browser-update"><div ev-class="dialog-top">貼心提醒,<br>請將您的瀏覽器升級至<br>' + showBrowser[browser] + ' ' + simpleVerAccepted[browser] + ' 以上版本,<br>以取得最佳瀏覽體驗。</div><div ev-class="dialog-bottom"><a ev-class="continue" href=' + link[browser] + ' target="_blank">前往下載最新版</a><a ev-class="continue">繼續瀏覽</a></div></div>');
+                $('body').append('<div ev-class="dialog-browser-update"><div ev-class="dialog-top">貼心提醒,<br>請將您的瀏覽器升級至<br>' + showBrowser[browser] + ' ' + verReq[browser] + ' 以上版本,<br>以取得最佳瀏覽體驗。</div><div ev-class="dialog-bottom"><a ev-class="continue" href=' + link[browser] + ' target="_blank">前往下載最新版</a><a ev-class="continue">繼續瀏覽</a></div></div>');
                 $('[ev-class="dialog-browser-update"]').css({
                     'width':'220px',
                     'position':'fixed',

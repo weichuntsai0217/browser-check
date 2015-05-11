@@ -10,13 +10,29 @@
     </head>
     <body>
         <h1>Browser Test</h1>
+        <div id="one"></div>
+        <div>########################################################</div>
+        <div id="two"></div>
 		<script type="text/javascript" src="lib/jquery/jquery-1.11.2.min.js"></script>
         <script type="text/javascript" src="jquery-browser-check-0.0.0/jquery.browser-check.js"></script>
         <script>
-            alert($.bcPlugin.getVersion());
-            alert($.bcPlugin.getSimpleVer());
-            alert($.bcPlugin.getBrowser());
-            alert($.bcPlugin.isMobile());
+            // alert($.bcPlugin.getVersion());
+            // alert($.bcPlugin.getSimpleVer());
+            // alert($.bcPlugin.getBrowser());
+            // alert($.bcPlugin.isMobile());
+            $.bcPlugin.notifyUpgrade({
+                verReq: {
+                    //'chrome': '38'
+                    'safari': '7.9',
+                    'firefox': '22.0.1',
+                    // 'opr': '29.0.1795.47',
+                    // 'msie': '11.0'
+                },
+                showBrowser: {
+                    'opr':'Operaaaaaa',
+                    'msie':'IE'
+                }
+            });
         </script>
     </body>
 </html>
