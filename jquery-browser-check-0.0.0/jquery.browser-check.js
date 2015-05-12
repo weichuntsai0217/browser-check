@@ -160,7 +160,7 @@
             if ( customexpire === 'browserclose' ) {
                 document.cookie = customcookie + ';';
             } else {
-                var expiretime = $.bcPlugin.formatTrans(customexpire);
+                var expiretime = $.bcPlugin.getExpireTime(customexpire);
                 if ( expiretime.indexOf('unknown') > -1 ) {
                     document.cookie = customcookie + ';';  // custom expire fail, follow default setting
                     return;
@@ -168,10 +168,11 @@
                 document.cookie = customcookie + ';' + 'expires=' + expiretime + ';';
             }
         },
-        formatTrans: function(str) {
+        getExpireTime: function(str) {
             // The following is the accepted formats:
-            // 1. interval: 7year,6months,5days,4hrs,3mins,2secs
+            // 1. interval: 7years,6months,5days,4hours,3mins,2secs
             // 2. date: 2015-1-23 20:45:36
+            var timeidx = ['years', 'months', 'days', 'hours', 'mins','secs'];
             if ( str.indexOf('unknown') > -1 ) {
                 // input string contains keyword: 'unknown', exit
                 return 'unknown';
@@ -182,9 +183,37 @@
                 // input string without any keyword, exit
                 return 'unknow';
             } else if ( str.indexOf('interval: ') > -1 ) {
+                var pattern = /^interval: /;
+                if ( pattern.test(str) ) {
+                    // if ( (str.match(/interval: /g) || []).length > 1 ) {
+                    //     return 'unknown';
+                    // }
+                    // str = str.replace('interval: ','');
+                    // if ( str.indexOf(',') === -1 ) {
+                    //     var count = [];
+                    //     for (var i=0; i < timeidx.length; i++) {
+                    //         var re = new RegExp(timeidx[i],'g');
+                    //         count[i] = (str.match(re) || []).length;
+                    //     }
+                    //     var total = count.reduce(function(a, b) {
+                    //         return a + b;
+                    //     });
+                    //     if ( total !== 1 ) {
+                    //         return 'unknown';
+                    //     }
+                    //     // tmp = str.replace('int').replace().replace().replace();
+                    // } else {
 
+                    // }
+                } else {
+                    return 'unknown';
+                }
             } else if ( str.indexOf('date: ') > -1 ) {
-                
+                var pattern = /^date: /;
+                if ( pattern.test(str) ) {
+                } else {
+                    return 'unknown';
+                }
             }
 
             return 'interval: ' + '';
@@ -198,7 +227,7 @@
             // expiretime = t.toGMTString();
             // document.cookie = 'browseralert=noalert; expires='+expiretime+';';
             // Control time to expire cookie end
-        }
+        },
         showUpgradeMsg: function(browser, verreq, link) {
             $('body').find('._bg').show();
             $('body').append('<div ev-class="dialog-browser-update"><div ev-class="dialog-top">貼心提醒,<br>請將您的瀏覽器升級至<br>' + browser + ' ' + verreq + ' 以上版本,<br>以取得最佳瀏覽體驗。</div><div ev-class="dialog-bottom"><a ev-class="continue" href=' + link + ' target="_blank">前往下載最新版</a><a ev-class="continue">繼續瀏覽</a></div></div>');
