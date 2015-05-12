@@ -21,11 +21,11 @@
             'msie': '11.0'
         },
         verCpr: {
-            'chrome': 0,
-            'safari': 0,
-            'firefox': 0,
-            'opr': 0,
-            'msie': 0
+            'chrome': 1,
+            'safari': 1,
+            'firefox': 1,
+            'opr': 1,
+            'msie': 1
         },
         spr: { // seperator, 'version' means safari
             'chrome':'/',
@@ -48,8 +48,12 @@
             'opr':'http://www.opera.com/zh-tw',
             'msie':'http://windows.microsoft.com/zh-tw/internet-explorer/download-ie'
         },
-        mobileNotify: {
-            'alsoShowInMobile': true
+        device: {
+            'desktop': true,
+            'mobile': true
+        },
+        addcookie: {
+            'customcookie': 'browseralert=noalert;'
         }
     };
     var agt = navigator.userAgent.toLowerCase();//alert(agt);
@@ -89,19 +93,6 @@
             var version = tmp.substr(pos, len);
             return version;
         },
-        getSimpleVer: function() {
-            var browser = $.bcPlugin.getBrowser();
-            var version = '';
-            if (browser === 'safari') {
-                browser = 'version';
-            }
-            var tmp = agt.substr(agt.indexOf(browser));
-            var end = tmp.indexOf('.');
-            var pos = tmp.indexOf(defaults.spr[browser])+1;
-            var len = end - pos; 
-            var version = tmp.substr(pos, len);
-            return version;
-        },
         isMobile: function() {
             var mobiles = new Array
                 (
@@ -134,22 +125,26 @@
             // alert(defaults.spr.chrome);
             var browser = $.bcPlugin.getBrowser();
             var version = $.bcPlugin.getVersion().split('.');
-            var base = settings.verReq[browser].split('.');
-            var min = Math.min(settings.verCpr[browser], ( base.length-1 ) );
-            for( var i = 0; i <= min; i++ ) {
-                if ( parseInt( version[i] ) < parseInt( base[i] ) ) {
-                    checkCookie();
+            var verreq = settings.verReq[browser].split('.');
+            var min = Math.min(settings.verCpr[browser], ( verreq.length ) );
+            if (version.length < min) {alert(123);return;}
+            for( var i = 0; i < min; i++ ) {
+                if ( parseInt( version[i] ) < parseInt( verreq[i] ) ) {
+                    if ( !checkCookie( settings.addcookie.customcookie ) ) {
+                        setCookie( settings.addcookie.customcookie );
+                        showUpgradeMsg();
+                    }
+                    break;
                 }
             }
 
-            function checkCookie() {
-                if ( document.cookie && (document.cookie.indexOf('browseralert=noalert') != -1) ) {
-                    return;
+            function checkCookie(customcookie) {
+                if ( document.cookie && (document.cookie.indexOf(customcookie) != -1) ) {
+                    return true;
                 }
-                setCookie();
-                showUpgradeMsg();
+                return false;
             }
-            function setCookie() {
+            function setCookie(customcookie) {
                 // If you want to expire cookie by controling time:
                 // Control time to expire cookie start
                 // var interval = 7200; // in seconds
@@ -162,12 +157,12 @@
 
                 // If you want to expire cookie by closing browser:
                 // Close browser to expire cookie start:
-                document.cookie = 'browseralert=noalert;';
+                document.cookie = customcookie;
                 // Close browser to expire cookie end:
             }
             function showUpgradeMsg() {
                 $('body').find('._bg').show();
-                $('body').append('<div ev-class="dialog-browser-update"><div ev-class="dialog-top">貼心提醒,<br>請將您的瀏覽器升級至<br>' + showBrowser[browser] + ' ' + verReq[browser] + ' 以上版本,<br>以取得最佳瀏覽體驗。</div><div ev-class="dialog-bottom"><a ev-class="continue" href=' + link[browser] + ' target="_blank">前往下載最新版</a><a ev-class="continue">繼續瀏覽</a></div></div>');
+                $('body').append('<div ev-class="dialog-browser-update"><div ev-class="dialog-top">貼心提醒,<br>請將您的瀏覽器升級至<br>' + settings.showBrowser[browser] + ' ' + settings.verReq[browser] + ' 以上版本,<br>以取得最佳瀏覽體驗。</div><div ev-class="dialog-bottom"><a ev-class="continue" href=' + settings.link[browser] + ' target="_blank">前往下載最新版</a><a ev-class="continue">繼續瀏覽</a></div></div>');
                 $('[ev-class="dialog-browser-update"]').css({
                     'width':'220px',
                     'position':'fixed',

@@ -17,20 +17,27 @@
         <script type="text/javascript" src="jquery-browser-check-0.0.0/jquery.browser-check.js"></script>
         <script>
             // alert($.bcPlugin.getVersion());
-            // alert($.bcPlugin.getSimpleVer());
             // alert($.bcPlugin.getBrowser());
             // alert($.bcPlugin.isMobile());
+            alert(document.cookie);
             $.bcPlugin.notifyUpgrade({
                 verReq: {
-                    //'chrome': '38'
-                    'safari': '7.9',
-                    'firefox': '22.0.1',
-                    // 'opr': '29.0.1795.47',
-                    // 'msie': '11.0'
+                    'chrome': '42.0.2311.136',
+                    'safari': '8.22',
+                    'firefox': '37.23',
+                    'opr': '29.33.77',
+                    'msie': '11.2.55'
                 },
-                showBrowser: {
-                    'opr':'Operaaaaaa',
-                    'msie':'IE'
+                device: {
+                    'desktop': false,
+                    'mobile': false
+                },
+                verCpr: {
+                    'msie': 7,
+                    'opr': 8,
+                    'safari': 9,
+                    'chrome': 10,
+                    'firefox': 11
                 }
             });
         </script>
