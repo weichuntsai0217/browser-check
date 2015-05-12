@@ -45,7 +45,8 @@
             'mobile': true
         },
         addcookie: {
-            'customcookie': 'browseralert=noalert'
+            'customcookie': 'browseralert=noalert',
+            'customexpire': 'browserclose'
         }
     };
     var agt = navigator.userAgent.toLowerCase();//alert(agt);
@@ -125,7 +126,9 @@
             var browser = $.bcPlugin.getBrowser();
             var version = $.bcPlugin.getVersion().split('.');
             var verreq = settings.verReq[browser].split('.');
-            var min = Math.min(settings.verCpr[browser], verreq.length, version.length);alert(min);
+            var min = Math.min(settings.verCpr[browser], verreq.length, version.length);
+            alert(min);
+            alert($.bcPlugin.compareVersion(version, verreq, min));
             if ( $.bcPlugin.compareVersion(version, verreq, min) ) {
                 if ( !$.bcPlugin.checkCookie( settings.addcookie.customcookie ) ) {
                     $.bcPlugin.setCookie( settings.addcookie.customcookie );
@@ -135,7 +138,7 @@
         },
         compareVersion: function(version, verreq, min) {
             // if verreq > version, will return true
-            var bigger;
+            var bigger = false;
             for( var i = 0; i < min; i++ ) {
                 if ( parseInt( version[i] ) < parseInt( verreq[i] ) ) {
                     bigger = true;
@@ -153,7 +156,39 @@
             }
             return false;
         },
-        setCookie: function(customcookie) {
+        setCookie: function(customcookie, customexpire) {
+            if ( customexpire === 'browserclose' ) {
+                document.cookie = customcookie + ';';
+            } else {
+                var expiretime = $.bcPlugin.formatTrans(customexpire);
+                if ( expiretime.indexOf('unknown') > -1 ) {
+                    document.cookie = customcookie + ';';  // custom expire fail, follow default setting
+                    return;
+                }
+                document.cookie = customcookie + ';' + 'expires=' + expiretime + ';';
+            }
+        },
+        formatTrans: function(str) {
+            // The following is the accepted formats:
+            // 1. interval: 7year,6months,5days,4hrs,3mins,2secs
+            // 2. date: 2015-1-23 20:45:36
+            if ( str.indexOf('unknown') > -1 ) {
+                // input string contains keyword: 'unknown', exit
+                return 'unknown';
+            } else if (( str.indexOf('interval: ') > -1 ) && ( str.indexOf('date: ') > -1 )) {
+                // cannot set interval and date at the same time
+                return 'unknow';
+            } else if (( str.indexOf('interval: ') === -1 ) && ( str.indexOf('date: ') === -1 )) {
+                // input string without any keyword, exit
+                return 'unknow';
+            } else if ( str.indexOf('interval: ') > -1 ) {
+
+            } else if ( str.indexOf('date: ') > -1 ) {
+                
+            }
+
+            return 'interval: ' + '';
+            return 'date: ' + '';
             // If you want to expire cookie by controling time:
             // Control time to expire cookie start
             // var interval = 7200; // in seconds
@@ -163,12 +198,7 @@
             // expiretime = t.toGMTString();
             // document.cookie = 'browseralert=noalert; expires='+expiretime+';';
             // Control time to expire cookie end
-
-            // If you want to expire cookie by closing browser:
-            // Close browser to expire cookie start:
-            document.cookie = customcookie + ';';
-            // Close browser to expire cookie end:
-        },
+        }
         showUpgradeMsg: function(browser, verreq, link) {
             $('body').find('._bg').show();
             $('body').append('<div ev-class="dialog-browser-update"><div ev-class="dialog-top">貼心提醒,<br>請將您的瀏覽器升級至<br>' + browser + ' ' + verreq + ' 以上版本,<br>以取得最佳瀏覽體驗。</div><div ev-class="dialog-bottom"><a ev-class="continue" href=' + link + ' target="_blank">前往下載最新版</a><a ev-class="continue">繼續瀏覽</a></div></div>');

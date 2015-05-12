@@ -12,30 +12,41 @@
 		<script type="text/javascript" src="lib/jquery/jquery-1.11.2.min.js"></script>
         <script type="text/javascript" src="jquery-browser-check-0.0.0/jquery.browser-check.js"></script>
         <script>
+            alert(document.cookie);
+            var interval = 10; // in seconds
+            var  t = new Date();
+            t.setDate( t.getDate() );
+            t.setSeconds(t.getSeconds()+interval);
+            expiretime = t.toGMTString();alert(expiretime);
+            document.cookie = 'browseralert=noalert; expires='+expiretime+';';
+            document.cookie = 'aaa';
+            alert(document.cookie);
+
+
             // alert($.bcPlugin.getVersion());
             // alert($.bcPlugin.getBrowser());
             // alert($.bcPlugin.isMobile());
-            alert(document.cookie);
-            $.bcPlugin.notifyUpgrade({
-                verReq: {
-                    'chrome': '42.0.201.136.88.99',
-                    'safari': '8.22',
-                    'firefox': '37.23',
-                    'opr': '29.33.77',
-                    'msie': '11.2.55'
-                },
-                device: {
-                    'desktop': true,
-                    'mobile': true
-                },
-                verCpr: {
-                    'msie': 7,
-                    'opr': 8,
-                    'safari': 9,
-                    'chrome': 10,
-                    'firefox': 11
-                }
-            });
+            // alert(document.cookie);
+            // $.bcPlugin.notifyUpgrade({
+            //     verReq: {
+            //         'chrome': '42.0.2311.200',
+            //         'safari': '8.22',
+            //         'firefox': '37.23',
+            //         'opr': '29.33.77',
+            //         'msie': '11.2.55'
+            //     },
+            //     device: {
+            //         'desktop': true,
+            //         'mobile': true
+            //     },
+            //     verCpr: {
+            //         'msie': 7,
+            //         'opr': 8,
+            //         'safari': 9,
+            //         'chrome': 4,
+            //         'firefox': 11
+            //     }
+            // });
         </script>
     </body>
 </html>
