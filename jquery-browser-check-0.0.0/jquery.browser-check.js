@@ -157,14 +157,10 @@
             return false;
         },
         setCookie: function(customcookie, customexpire) {
-            if ( customexpire === 'browserclose' ) {
+            var expiretime = $.bcPlugin.getExpireTime(customexpire);
+            if ( expiretime === defaults.addcookie.customexpire ) {
                 document.cookie = customcookie + ';';
             } else {
-                var expiretime = $.bcPlugin.getExpireTime(customexpire);
-                if ( expiretime.indexOf('unknown') > -1 ) {
-                    document.cookie = customcookie + ';';  // custom expire fail, follow default setting
-                    return;
-                }
                 document.cookie = customcookie + ';' + 'expires=' + expiretime + ';';
             }
         },
@@ -173,60 +169,41 @@
             // 1. interval: 7years,6months,5days,4hours,3mins,2secs
             // 2. date: 2015-1-23 20:45:36
             var timeidx = ['years', 'months', 'days', 'hours', 'mins','secs'];
-            if ( str.indexOf('unknown') > -1 ) {
-                // input string contains keyword: 'unknown', exit
-                return 'unknown';
-            } else if (( str.indexOf('interval: ') > -1 ) && ( str.indexOf('date: ') > -1 )) {
-                // cannot set interval and date at the same time
-                return 'unknow';
-            } else if (( str.indexOf('interval: ') === -1 ) && ( str.indexOf('date: ') === -1 )) {
-                // input string without any keyword, exit
-                return 'unknow';
-            } else if ( str.indexOf('interval: ') > -1 ) {
-                var pattern = /^interval: /;
-                if ( pattern.test(str) ) {
-                    // if ( (str.match(/interval: /g) || []).length > 1 ) {
-                    //     return 'unknown';
-                    // }
-                    // str = str.replace('interval: ','');
-                    // if ( str.indexOf(',') === -1 ) {
-                    //     var count = [];
-                    //     for (var i=0; i < timeidx.length; i++) {
-                    //         var re = new RegExp(timeidx[i],'g');
-                    //         count[i] = (str.match(re) || []).length;
-                    //     }
-                    //     var total = count.reduce(function(a, b) {
-                    //         return a + b;
-                    //     });
-                    //     if ( total !== 1 ) {
-                    //         return 'unknown';
-                    //     }
-                    //     // tmp = str.replace('int').replace().replace().replace();
-                    // } else {
+            var t;
+            for (var i=0; i<timeidx.length; i++) {
+                var end = str.indexOf(timeidx[i]);
+                if ( end > -1 ) {
+                    var interval = parseInt(str.substr(0,end));
+                    if ( interval === NaN ) {
+                        return defaults.addcookie.customexpire;
+                    }
+                    t.setDate( t.getDate() );
+                    if (timeidx[i] === 'years') {
+                        t.setFullYear(t.getFullYear() + interval);
 
-                    // }
-                } else {
-                    return 'unknown';
-                }
-            } else if ( str.indexOf('date: ') > -1 ) {
-                var pattern = /^date: /;
-                if ( pattern.test(str) ) {
-                } else {
-                    return 'unknown';
+                    } else if (timeidx[i] === 'months') {
+                        t.setMonth(t.getMonth() + interval);
+
+                    } else if (timeidx[i] === 'days') {
+                        t.setDate(t.getDate() + interval);
+
+                    } else if (timeidx[i] === 'hours') {
+                        t.setHours(t.getHours() + interval);
+
+                    } else if (timeidx[i] === 'mins') {
+                        t.setMinutes(t.getMinutes() + interval);
+
+                    } else if (timeidx[i] === 'secs') {
+                        t.setSeconds(t.getSeconds() + interval);
+                    }
+                    return t.toGMTString();
                 }
             }
-
-            return 'interval: ' + '';
-            return 'date: ' + '';
-            // If you want to expire cookie by controling time:
-            // Control time to expire cookie start
-            // var interval = 7200; // in seconds
-            // var  t = new Date();
-            // t.setDate( t.getDate() );
-            // t.setSeconds(t.getSeconds()+interval);
-            // expiretime = t.toGMTString();
-            // document.cookie = 'browseralert=noalert; expires='+expiretime+';';
-            // Control time to expire cookie end
+            t = new Date(str);
+            if (  t !== 'Invalid Date' ) {
+                return t.toGMTString();
+            }
+            return defaults.addcookie.customexpire;
         },
         showUpgradeMsg: function(browser, verreq, link) {
             $('body').find('._bg').show();
