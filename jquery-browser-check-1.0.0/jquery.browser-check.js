@@ -49,7 +49,8 @@
             'customexpire': 'browserclose'
         }
     };
-    var agt = navigator.userAgent.toLowerCase();//alert(agt);
+    var agt = navigator.userAgent.toLowerCase();
+    var doubleCheck;
     jQuery.bcPlugin = {
         getBrowser: function() {
             var browser = '';
@@ -112,6 +113,7 @@
         },
         notifyUpgrade: function( options ) {
             var settings = $.extend( true, {}, defaults, options);
+            doubleCheck = $.extend( true, {}, settings);
             if (( settings.device.desktop === false ) && ( settings.device.mobile === false )) {
                 return;
             } else if ( settings.device.mobile === false ) {
@@ -127,8 +129,6 @@
             var version = $.bcPlugin.getVersion().split('.');
             var verreq = settings.verReq[browser].split('.');
             var min = Math.min(settings.verCpr[browser], verreq.length, version.length);
-            // alert(min);
-            // alert($.bcPlugin.compareVersion(version, verreq, min));
             if ( $.bcPlugin.compareVersion(version, verreq, min) ) {
                 if ( !$.bcPlugin.checkCookie( settings.addcookie.customcookie ) ) {
                     $.bcPlugin.setCookie( settings.addcookie.customcookie, settings.addcookie.customexpire );
@@ -202,14 +202,10 @@
                     } else if (timeidx[i] === 'secs') {
                         t.setSeconds(t.getSeconds() + interval);
                     }
-                    alert(timeidx[i]);
-                    alert(interval);
-                    alert(t);
-                    alert(t.toGMTString());
                     return t.toGMTString();
                 }
             }
-            t = new Date(str);alert(t.toGMTString());
+            t = new Date(str);
             if (  t !== 'Invalid Date' ) {
                 return t.toGMTString();
             }
@@ -250,6 +246,9 @@
                 $('body').find('._bg').hide();
                 $('[ev-class="dialog-browser-update"]').remove();
             });
+        },
+        getMinVerSetting: function() {
+            return doubleCheck.verReq[$.bcPlugin.getBrowser()];
         }
     };
 })(jQuery);

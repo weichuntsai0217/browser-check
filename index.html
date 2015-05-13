@@ -9,74 +9,33 @@
     </head>
     <body>
         <h1>Browser Test</h1>
+        <h2 id="user">Your browser and version: </h2>
+        <h2 id="min-ver">The minimum version for this site: </h2>
+        <div id="one"></div>
+        <div id="two"></div>
 		<script type="text/javascript" src="lib/jquery/jquery-1.11.2.min.js"></script>
-        <script type="text/javascript" src="jquery-browser-check-0.0.0/jquery.browser-check.js"></script>
+        <script type="text/javascript" src="jquery-browser-check-1.0.0/jquery.browser-check.js"></script>
         <script>
-
-            //var str = 'hello in hello';
-            //alert(str);
-            // str = str.replace('hello','aaa');
-            //alert(str.replace('hello','aaa').replace('hello','aaa'));
-            // str = str.replace('hello','aaa');
-            // alert(str);
-            // var patt = /^interval: /;
-            // var result = patt.test(str);
-            // alert(result);
-            // var tmp = 'interval: ';
-            // var re = new RegExp(tmp,"g");
-            // var re2 = /hello/g;
-            // alert((str.match(re2) || []).length);
-            // alert(str.match(re2));
-
-
-            // alert(document.cookie);
-            // var tst = 'a2045asdwwr@3';
-            // if ( isNaN(parseInt(tst)) ) {
-            //     alert('this is NaN');
-            // }
-            // var interval = 10; // in seconds
-            // var  t = new Date("asd");
-            // if (t == 'Invalid Date') {alert('shit')}
-            // alert(t);
-            // alert(t.toGMTString());
-            // t.setDate( t.getDate() );
-            // t.setSeconds(t.getSeconds()+interval);
-            // expiretime = t.toGMTString();alert(expiretime);
-            // document.cookie = 'browseralert=noalert; expires='+expiretime+';';
-            // document.cookie = 'aaa';
-            // alert(document.cookie);
-
-
-            // alert($.bcPlugin.getVersion());
-            // alert($.bcPlugin.getBrowser());
-            // alert($.bcPlugin.isMobile());
-            // alert(document.cookie);
-            alert(document.cookie);
-            $.bcPlugin.removeCookie('browseralert');
-            alert(document.cookie);
             $.bcPlugin.notifyUpgrade({
                 verReq: {
-                    'chrome': '43.0.2311.200',
-                    'safari': '9.22',
-                    'firefox': '38.23',
-                    'opr': '30.33.77',
-                    'msie': '12.2.55'
-                },
-                device: {
-                    'desktop': true,
-                    'mobile': true
+                    'chrome': '43.8',
+                    'safari': '8.2.1',
+                    'firefox': '37.1',
+                    'opr': '29.0.1795.47',
+                    'msie': '11.0'
                 },
                 verCpr: {
-                    'msie': 7,
-                    'opr': 8,
-                    'safari': 9,
+                    'msie': 1,
+                    'opr': 3,
+                    'safari': 2,
                     'chrome': 4,
-                    'firefox': 11
-                },
-                addcookie: {
-                    'customexpire':'2015-5-13 11:14:00'
+                    'firefox': 2
                 }
             });
+            var user = $.bcPlugin.getBrowser() + ' ' + $.bcPlugin.getVersion();
+            var minver = $.bcPlugin.getMinVerSetting;
+            $('#user').append(user);
+            $('#min-ver').append(minver);
         </script>
     </body>
 </html>
