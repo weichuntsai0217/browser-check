@@ -30,8 +30,10 @@
 
 
             // alert(document.cookie);
-            var tst = 'a2045asdwwr@3';
-            alert(parseInt(tst));
+            // var tst = 'a2045asdwwr@3';
+            // if ( isNaN(parseInt(tst)) ) {
+            //     alert('this is NaN');
+            // }
             // var interval = 10; // in seconds
             // var  t = new Date("asd");
             // if (t == 'Invalid Date') {alert('shit')}
@@ -49,26 +51,32 @@
             // alert($.bcPlugin.getBrowser());
             // alert($.bcPlugin.isMobile());
             // alert(document.cookie);
-            // $.bcPlugin.notifyUpgrade({
-            //     verReq: {
-            //         'chrome': '42.0.2311.200',
-            //         'safari': '8.22',
-            //         'firefox': '37.23',
-            //         'opr': '29.33.77',
-            //         'msie': '11.2.55'
-            //     },
-            //     device: {
-            //         'desktop': true,
-            //         'mobile': true
-            //     },
-            //     verCpr: {
-            //         'msie': 7,
-            //         'opr': 8,
-            //         'safari': 9,
-            //         'chrome': 4,
-            //         'firefox': 11
-            //     }
-            // });
+            alert(document.cookie);
+            $.bcPlugin.removeCookie('browseralert');
+            alert(document.cookie);
+            $.bcPlugin.notifyUpgrade({
+                verReq: {
+                    'chrome': '43.0.2311.200',
+                    'safari': '9.22',
+                    'firefox': '38.23',
+                    'opr': '30.33.77',
+                    'msie': '12.2.55'
+                },
+                device: {
+                    'desktop': true,
+                    'mobile': true
+                },
+                verCpr: {
+                    'msie': 7,
+                    'opr': 8,
+                    'safari': 9,
+                    'chrome': 4,
+                    'firefox': 11
+                },
+                addcookie: {
+                    'customexpire':'2015-5-13 11:14:00'
+                }
+            });
         </script>
     </body>
 </html>

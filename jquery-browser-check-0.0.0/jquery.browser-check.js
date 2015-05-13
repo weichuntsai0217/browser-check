@@ -127,11 +127,11 @@
             var version = $.bcPlugin.getVersion().split('.');
             var verreq = settings.verReq[browser].split('.');
             var min = Math.min(settings.verCpr[browser], verreq.length, version.length);
-            alert(min);
-            alert($.bcPlugin.compareVersion(version, verreq, min));
+            // alert(min);
+            // alert($.bcPlugin.compareVersion(version, verreq, min));
             if ( $.bcPlugin.compareVersion(version, verreq, min) ) {
                 if ( !$.bcPlugin.checkCookie( settings.addcookie.customcookie ) ) {
-                    $.bcPlugin.setCookie( settings.addcookie.customcookie );
+                    $.bcPlugin.setCookie( settings.addcookie.customcookie, settings.addcookie.customexpire );
                     $.bcPlugin.showUpgradeMsg(settings.showBrowser[browser], settings.verReq[browser], settings.link[browser]);
                 }
             }
@@ -164,17 +164,23 @@
                 document.cookie = customcookie + ';' + 'expires=' + expiretime + ';';
             }
         },
+        removeCookie: function(cookiename) {
+            var d = new Date();
+            d.setTime(d.getTime() -1);
+            var expires = "expires=" + d.toGMTString();
+            document.cookie = cookiename + '=' + ';' + expires + ';'
+        },
         getExpireTime: function(str) {
             // The following is the accepted formats:
             // 1. interval: 7years,6months,5days,4hours,3mins,2secs
             // 2. date: 2015-1-23 20:45:36
             var timeidx = ['years', 'months', 'days', 'hours', 'mins','secs'];
-            var t;
+            var t = new Date();
             for (var i=0; i<timeidx.length; i++) {
                 var end = str.indexOf(timeidx[i]);
                 if ( end > -1 ) {
                     var interval = parseInt(str.substr(0,end));
-                    if ( interval === NaN ) {
+                    if ( isNaN(interval) ) {
                         return defaults.addcookie.customexpire;
                     }
                     t.setDate( t.getDate() );
@@ -196,10 +202,14 @@
                     } else if (timeidx[i] === 'secs') {
                         t.setSeconds(t.getSeconds() + interval);
                     }
+                    alert(timeidx[i]);
+                    alert(interval);
+                    alert(t);
+                    alert(t.toGMTString());
                     return t.toGMTString();
                 }
             }
-            t = new Date(str);
+            t = new Date(str);alert(t.toGMTString());
             if (  t !== 'Invalid Date' ) {
                 return t.toGMTString();
             }
